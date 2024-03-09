@@ -3063,11 +3063,11 @@ namespace MetadataExtractor.IO
             return true;
         }
 
-		public override bool IsCloserToEnd(long numberOfBytes)
-		{
-			return _index + numberOfBytes > _bytes.Length;
-		}
-	}
+        public override bool IsCloserToEnd(long numberOfBytes)
+        {
+            return _index + numberOfBytes > _bytes.Length;
+        }
+    }
 
     /// <summary>Base class for random access data reading operations of common data types.</summary>
     /// <remarks>

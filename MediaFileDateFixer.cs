@@ -24,8 +24,8 @@ using System.Windows.Forms;
 
 [assembly: System.Reflection.AssemblyTitle("MediaFileDateFixer")]
 [assembly: System.Reflection.AssemblyProduct("MediaFileDateFixer")]
-[assembly: System.Reflection.AssemblyVersion("1.0.0.0")]
-[assembly: System.Reflection.AssemblyFileVersion("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersion("1.0.1.0")]
+[assembly: System.Reflection.AssemblyFileVersion("1.0.1.0")]
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
 
 namespace MediaFileDateFixer
