@@ -164,7 +164,7 @@ namespace MediaFileDateFixer
                 else if (en.FileDate.Ticks == en.MetaDate.Ticks) en.Detection = Entry.EDetection.Matching_Dates;
                 else if (en.MetaDate == DateTime.MinValue)       en.Detection = Entry.EDetection.No_Meta_Date;
                 else if (AbsDiff < 10)                           en.Detection = Entry.EDetection.Small_Difference;
-                else if (AbsDiff > 30758400)                     en.Detection = Entry.EDetection.Big_Difference;
+                else if (AbsDiff > 365 * 24 * 3600)              en.Detection = Entry.EDetection.Big_Difference;
                 else if (AbsDiff < 86405 && HourAbsDiff < 5)     en.Detection = Entry.EDetection.Time_Zone_Difference;
                 else                                             en.Detection = Entry.EDetection.Normal_Difference;
                 en.Active = false;
