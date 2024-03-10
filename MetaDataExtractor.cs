@@ -4643,8 +4643,10 @@ namespace MetadataExtractor.Formats.QuickTime
                         var directory = new QuickTimeTrackHeaderDirectory();
                         directory.Set(QuickTimeTrackHeaderDirectory.TagVersion, a.Reader.GetByte());
                         directory.Set(QuickTimeTrackHeaderDirectory.TagFlags, a.Reader.GetBytes(3));
-                        directory.Set(QuickTimeTrackHeaderDirectory.TagCreated, _epoch.AddTicks(TimeSpan.TicksPerSecond*a.Reader.GetUInt32()));
-                        directory.Set(QuickTimeTrackHeaderDirectory.TagModified, _epoch.AddTicks(TimeSpan.TicksPerSecond*a.Reader.GetUInt32()));
+                        var created = a.Reader.GetUInt32();
+                        if (created != 0) directory.Set(QuickTimeTrackHeaderDirectory.TagCreated, _epoch.AddTicks(TimeSpan.TicksPerSecond * created));
+                        var modified = a.Reader.GetUInt32();
+                        if (modified != 0) directory.Set(QuickTimeTrackHeaderDirectory.TagModified, _epoch.AddTicks(TimeSpan.TicksPerSecond * modified));
                         directory.Set(QuickTimeTrackHeaderDirectory.TagTrackId, a.Reader.GetUInt32());
                         a.Reader.Skip(4L);
                         directory.Set(QuickTimeTrackHeaderDirectory.TagDuration, a.Reader.GetUInt32());
@@ -4671,8 +4673,10 @@ namespace MetadataExtractor.Formats.QuickTime
                         var directory = new QuickTimeMovieHeaderDirectory();
                         directory.Set(QuickTimeMovieHeaderDirectory.TagVersion, a.Reader.GetByte());
                         directory.Set(QuickTimeMovieHeaderDirectory.TagFlags, a.Reader.GetBytes(3));
-                        directory.Set(QuickTimeMovieHeaderDirectory.TagCreated, _epoch.AddTicks(TimeSpan.TicksPerSecond*a.Reader.GetUInt32()));
-                        directory.Set(QuickTimeMovieHeaderDirectory.TagModified, _epoch.AddTicks(TimeSpan.TicksPerSecond*a.Reader.GetUInt32()));
+                        var created = a.Reader.GetUInt32();
+                        if (created != 0) directory.Set(QuickTimeTrackHeaderDirectory.TagCreated, _epoch.AddTicks(TimeSpan.TicksPerSecond * created));
+                        var modified = a.Reader.GetUInt32();
+                        if (modified != 0) directory.Set(QuickTimeTrackHeaderDirectory.TagModified, _epoch.AddTicks(TimeSpan.TicksPerSecond * modified));
                         var timeScale = a.Reader.GetUInt32();
                         directory.Set(QuickTimeMovieHeaderDirectory.TagTimeScale, timeScale);
                         directory.Set(QuickTimeMovieHeaderDirectory.TagDuration, TimeSpan.FromSeconds(a.Reader.GetUInt32()/(double) timeScale));
