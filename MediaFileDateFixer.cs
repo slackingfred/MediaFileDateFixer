@@ -149,14 +149,22 @@ namespace MediaFileDateFixer
                         {
                             DateTime dt;
                             if (!MetadataExtractor.DirectoryExtensions.TryGetDateTime(d, Tag, out dt)) continue;
-                            en.MetaDate = (Tags == TagsPng ? dt.ToLocalTime() : new DateTime(dt.Ticks, DateTimeKind.Local)); //PNG stores time in UTC
+                            // PNG stores time in UTC
+                            // According to https://exiftool.org/forum/index.php?topic=7911.0, QuickTime also stores time in UTC
+                            if (Tags == TagsPng || Tags == TagsQTMovie || Tags == TagsQTTrack)
+                                dt = dt.ToLocalTime();
+                            else
+                                dt = new DateTime(dt.Ticks, DateTimeKind.Local);
+                            en.MetaDate = dt;
                             if (Tags == TagsQTMeta) goto FoundMetaDate; //Prioritize meta directory because the other QT time fields can be in UTC (but aren't always)
                             break;
                         }
+                        if (en.MetaDate != DateTime.MinValue)
+                            break; // Use the first date found so we can prioritize Movie Header over Track Header
                     }
                 }
                 catch (Exception e) { en.Error = e.Message; }
-                FoundMetaDate:
+            FoundMetaDate:
 
                 long Diff = (en.MetaDate == DateTime.MinValue || en.Error != null ? 0 : (long)(en.FileDate - en.MetaDate).TotalSeconds);
                 long AbsDiff = Math.Abs(Diff), HourAbsDiff = Math.Abs(((AbsDiff + 1800) % 3600) - 1800);
@@ -182,8 +190,8 @@ namespace MediaFileDateFixer
 
             OnProgress(EProgressState.Counting, EProgressType.CountInit, 1);
             int Count = 0;
-            foreach (Entry en in Entries) if (en.Active && en.MetaDate == DateTime.MinValue && en.FileDate != en.MetaDate && ((DetectionFilter & (int)en.Detection) == 0)) Count++;
-            OnProgress(EProgressState.Applying, EProgressType.CountInit, 1);
+            foreach (Entry en in Entries) if (en.Active && en.MetaDate != DateTime.MinValue && en.FileDate != en.MetaDate && ((DetectionFilter & (int)en.Detection) == 0)) Count++;
+            OnProgress(EProgressState.Applying, EProgressType.CountInit, Count);
 
             foreach (Entry en in Entries)
             {
@@ -470,6 +478,7 @@ namespace MediaFileDateFixer
         {   
             //To avoid animation, we need to move the progress bar backwards
             if (value < pb.Maximum) { pb.Value = value + 1; } //Move past
+            // TODO: This crashes when pb.Maximum is 0
             else { pb.Value = value; pb.Value = value - 1; } //Special case (can't set value > Maximum)
             pb.Value = value;
         }
